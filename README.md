@@ -23,7 +23,7 @@ The script requires:
 
 ```
    $cred    = get-credential   # Provide credential to connect to OneView
-    .\Pre-Check-SharedInfrastructure.ps1  -OVlistCSV OVapplinaces.txt -OVcredential $cred 
+    .\Pre-Check-SharedInfrastructure.ps1  -OVlistCSV OVappliances.csv -OVcredential $cred 
 
 ```
 
