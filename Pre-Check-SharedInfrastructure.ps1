@@ -1,20 +1,9 @@
 
-Param ( [string]$OVApplianceIP      ="",
-        [string]$OVlistCSV          = "",
-        [PScredential]$OVcredential = $Null,
-        [string]$OVAdminName        ="", 
-        [string]$OVAdminPassword    ="",
-        [string]$OVAuthDomain       = "local",
 
-        [string]$OneViewModule      = "HPOneView.410",  
+Param ($credential , $hostname, $OneViewModule      = "HPOneView.410")
 
-        [switch]$All,
-        [dateTime]$Start            = (get-date -day 1) ,
-        [dateTime]$End              = (get-date) , 
-        [string]$Severity           = ''                # default will be critical and warning
-        
 
-)
+
 #$ErrorActionPreference = 'SilentlyContinue'
 $DoubleQuote    = '"'
 $CRLF           = "`r`n"
@@ -101,7 +90,7 @@ Function Out-ToScriptFile ([string]$Outfile)
 
 # ---------------- Modules import
 #
-import-module $OneViewModule 
+#import-module $OneViewModule 
 
 $isImportExcelPresent   = (get-module -name "ImportExcel" -listavailable ) -ne $NULL
 if (-not $isImportExcelPresent )
@@ -112,24 +101,22 @@ if (-not $isImportExcelPresent )
 $ScriptDir          = Split-Path $script:MyInvocation.MyCommand.Path
 # ---------------- Connect to OneView appliance
 #
-write-host -ForegroundColor Cyan "-----------------------------------------------------"
-write-host -ForegroundColor Cyan "Connect to OneView appliance..."
-write-host -ForegroundColor Cyan "-----------------------------------------------------"
-if (-not $OVcredential)
-{
-    $OVcredential  = get-credential -message "Provide  credential to access the Oneview environment..."
-}
-if ([string]::IsNullOrEmpty($OVlistCSV) -or (-not (test-path -path $OVlistCSV)) )
-{
-    Connect-HPOVMgmt -appliance $OVApplianceIP -Credential $OVcredential 
-}
-else 
-{
-    $OVlistCSV      = $OVlistCSV.Split($Delimiter)[-1]
-    $OVlistCSV      = "$ScriptDir\$OVlistCSV"
 
-    type $OVlistCSV | % { Connect-HPOVMgmt -Hostname $_ -Credential $OVcredential }    
+if (-not $credential)
+{
+    $credential = get-credential -message "Please provide admin credential to log into...."
 }
+
+
+if (-not ($hostname))
+{
+    $hostname   = read-host "Please provide the FQDN name or IP address of OneView"
+}
+
+write-host -foreground CYAN  '#################################################'
+write-host -foreground CYAN  "Connecting to OneView ... $hostname"
+write-host -foreground CYAN  '##################################################'
+Connect-HPOVMgmt -hostname $hostname -Credential $credential
 
 # ---------------------------
 #  Generate Output files
@@ -138,8 +125,6 @@ $timeStamp          = [DateTime]::Now.ToUniversalTime().ToString('yyyy-MM-ddTHH.
 
 $OutFile            = "$Prefix-$timeStamp.CSV"
 
-$startDate          = $start.ToShortDateString()
-$endDate            = $end.ToShortDateString()
 
 write-host -ForegroundColor CYAN "##NOTE: Delimiter used in the CSV file is '|' "
 
