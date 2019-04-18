@@ -23,7 +23,11 @@ The script requires:
 
 ```
    $cred    = get-credential   # Provide credential to connect to OneView
+<<<<<<< HEAD
     .\Pre-Check-SharedInfrastructure.ps1  -hostname  <FQDN-OneView> -credential $cred 
+=======
+    .\Pre-Check-SharedInfrastructure.ps1  -OVlistCSV OVappliances.csv -OVcredential $cred 
+>>>>>>> 394b40ddef2172ba40b4cbfafa191d50b7a4570f
 
 ```
 
