@@ -23,7 +23,7 @@ The script requires:
 
 ```
    $cred    = get-credential   # Provide credential to connect to OneView
-    .\Pre-Check-SharedInfrastructure.ps1  -hostname  <FQDN-OneView> -credential $cred 
+    .\Pre-Check-SharedInfrastructure.ps1  -hostname  <FQDN-OneView> -credential $cred -AuthLoginDomain <AD-domain>
 
 ```
 
