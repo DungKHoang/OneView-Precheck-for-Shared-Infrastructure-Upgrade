@@ -1,6 +1,6 @@
 
 
-Param ($credential , $hostname, $OneViewModule      = "HPOneView.410")
+Param ($credential , $hostname, $OneViewModule      = "HPOneView.410", $AuthLoginDomain)
 
 
 
@@ -116,7 +116,7 @@ if (-not ($hostname))
 write-host -foreground CYAN  '#################################################'
 write-host -foreground CYAN  "Connecting to OneView ... $hostname"
 write-host -foreground CYAN  '##################################################'
-Connect-HPOVMgmt -hostname $hostname -Credential $credential
+Connect-HPOVMgmt -hostname $hostname -Credential $credential -AuthLoginDomain $AuthLoginDomain
 
 # ---------------------------
 #  Generate Output files
