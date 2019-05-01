@@ -29,13 +29,7 @@ $worksheetName  = "LI-Pre-Check"
 $HeaderText     = "logicalInterconnect|consistentState|stackingHealth|uplinkSet|portName|portStatus|LAGstate|applianceConnection"
 $columsToAlign  = @(2,3,6,7)  # consistentState|stackingHealth|portStatus|LAGstate
 $alignType      = "center"
-$conditions      = @(
-    New-ConditionalText unlink red
-    New-ConditionalText disabled red
-    New-ConditionalText Linked Blue Cyan
-    New-ConditionalText CONSISTENT Blue Cyan
-    New-ConditionalText redundantBlue Cyan
-    )
+
 
 function Generate-Excel 
 {
@@ -51,7 +45,13 @@ function Generate-Excel
     {
         $xl = $csvObject| Export-Excel -Path $excelFile -KillExcel -WorkSheetname $worksheetname -BoldTopRow -AutoSize -PassThru -ConditionalText $conditions
         $Sheet = $xl.Workbook.Worksheets[$worksheetName]
-        
+        $conditions      = @(
+    New-ConditionalText unlink red
+    New-ConditionalText disabled red
+    New-ConditionalText Linked Blue Cyan
+    New-ConditionalText CONSISTENT Blue Cyan
+    New-ConditionalText redundantBlue Cyan
+    )
         if ($columnsToAlign)
         { 
             $columnsToAlign | % { Set-ExcelColumn -Worksheetname $worksheetName -ExcelPackage $xl -Column $_ -HorizontalAlignment $alignType}
