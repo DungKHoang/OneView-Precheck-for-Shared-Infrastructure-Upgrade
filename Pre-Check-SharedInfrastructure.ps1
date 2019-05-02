@@ -59,7 +59,7 @@ function Generate-Excel
     {
         $xl = $csvObject| Export-Excel -Path $excelFile -KillExcel -WorkSheetname $worksheetname -BoldTopRow -AutoSize -PassThru -ConditionalText $conditions
         $Sheet = $xl.Workbook.Worksheets[$worksheetName]
-        
+ 
         if ($columnsToAlign)
         { 
             $columnsToAlign | % { Set-ExcelColumn -Worksheetname $worksheetName -ExcelPackage $xl -Column $_ -HorizontalAlignment $alignType}
