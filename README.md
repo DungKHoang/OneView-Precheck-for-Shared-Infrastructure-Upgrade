@@ -12,7 +12,6 @@ The script requires:
    * the latest OneView PowerShell library : https://github.com/HewlettPackard/POSH-HPOneView/releases
    * Optionally, you can install the module ImportExcel from the PowerShell gallery to take advantage of Excel functions 
      ** Use the command Install-module ImportExcel -scope CurrentUser 
-   * A txt file containing list of OneView appliances name or IP
 
 
 ## Note
@@ -23,7 +22,8 @@ The script requires:
 
 ```
    $cred    = get-credential   # Provide credential to connect to OneView
-    .\Pre-Check-SharedInfrastructure.ps1  -hostname  <FQDN-OneView> -credential $cred 
+   # Specify OneView host name and Login Domain ( default is "local" )
+    .\Pre-Check-SharedInfrastructure.ps1  -hostname  <FQDN-OneView> -credential $cred -AuthLoginDomain <AD-domain> 
 
 ```
 

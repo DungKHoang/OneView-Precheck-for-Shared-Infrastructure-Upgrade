@@ -1,6 +1,11 @@
 
 
-Param ($credential , $hostname, $OneViewModule      = "HPOneView.410")
+Param (
+    $credential , 
+    $hostname, 
+    $AuthLoginDomain = "local", 
+    $OneViewModule      = "HPOneView.410"
+    )
 
 
 
@@ -25,17 +30,20 @@ $Syn12K                   = 'SY12000' # Synergy enclosure type
 
 # -----------------------------  Custom data
 $Prefix         = "LI-Pre-Check"
-$worksheetName  = "LI-Pre-Check"
-$HeaderText     = "logicalInterconnect|consistentState|stackingHealth|uplinkSet|portName|portStatus|LAGstate|applianceConnection"
-$columsToAlign  = @(2,3,6,7)  # consistentState|stackingHealth|portStatus|LAGstate
-$alignType      = "center"
-$conditions      = @(
-    New-ConditionalText unlink red
-    New-ConditionalText disabled red
-    New-ConditionalText Linked Blue Cyan
-    New-ConditionalText CONSISTENT Blue Cyan
-    New-ConditionalText redundantBlue Cyan
-    )
+if ($isImportExcelPresent)
+{
+    $worksheetName  = "LI-Pre-Check"
+    $HeaderText     = "logicalInterconnect|consistentState|stackingHealth|uplinkSet|portName|portStatus|LAGstate|applianceConnection"
+    $columsToAlign  = @(2,3,6,7)  # consistentState|stackingHealth|portStatus|LAGstate
+    $alignType      = "center"
+    $conditions      = @(
+        New-ConditionalText unlink red
+        New-ConditionalText disabled red
+        New-ConditionalText Linked Blue Cyan
+        New-ConditionalText CONSISTENT Blue Cyan
+        New-ConditionalText redundantBlue Cyan
+        )
+}
 
 function Generate-Excel 
 {
@@ -60,6 +68,8 @@ function Generate-Excel
         Set-ExcelRow -Worksheet $sheet -Row 1  -FontSize 15 -BorderBottom thick -BorderColor darkblue -fontname Calibri -fontcolor darkblue -HorizontalAlignment center
         
         Close-ExcelPackage $xl 
+
+        write-host -ForegroundColor Cyan "Excel file --> $((dir $excelFile).FullName)"
     }
 }
 
@@ -116,7 +126,7 @@ if (-not ($hostname))
 write-host -foreground CYAN  '#################################################'
 write-host -foreground CYAN  "Connecting to OneView ... $hostname"
 write-host -foreground CYAN  '##################################################'
-Connect-HPOVMgmt -hostname $hostname -Credential $credential
+Connect-HPOVMgmt -hostname $hostname -Credential $credential  -AuthLoginDomain  $AuthLoginDomain
 
 # ---------------------------
 #  Generate Output files
